@@ -1,1 +1,139 @@
+#include<bits/stdc++.h>
+using ll=long long;
+using namespace std;
+void mergetron(ll a[][2],ll l,ll m,ll r, ll b[][2]){
+	int i = l, j = m + 1;
+    int k = 0;
+ 
+    while (i <= m && j <= r) {
+        int gt1,gt2;
+ 
+        if (a[i][1] < a[j][1]){
+        	gt2 = a[i][1];
+        	gt1 = a[i][0];
+        	i++;
+		} 
+        else {
+        	gt2 = a[j][1];
+        	gt1 = a[j][0];
+        	j++;
+		}
+ 
+        b[k][1] = gt2;
+        b[k][0] = gt1;
+        k++;
+    }
+ 
+    while (i <= m) {
+    	b[k][0]= a[i][0];
+    	b[k][1]= a[i][1];
+    	k++;
+    	i++;
+	}
+    while (j <= r) {
+    	b[k][0]= a[j][0];
+    	b[k][1]= a[j][1];
+    	k++;
+    	j++;
+	}
+ 
+   for (ll i=0; i<k; i++){
+   	 	a[l + i][0] = b[i][0];
+   	 	a[l + i][1] = b[i][1];
+   }
+}
 
+
+
+
+
+void  mergesort(ll a[][2],ll l, ll r, ll b[][2]){// ham sap xep de tim kiem
+	if(l>=r ) return ;
+	else {
+		ll m= (l+r)/2;
+		mergesort(a, l, m,b);
+		
+		mergesort(a, m+1, r,b);
+		mergetron(a,l,m,r,b);
+		
+	}
+}
+void timkiem(ll a[][2],ll l, ll r,ll x){ // ham tim kiem
+	ll dem=1;
+	while(l<=r){
+		ll m=(l+r)/2;
+		if(a[m][1]==a[x][1]){
+			
+			dem++;
+			ll l1  = m - 1, r1 = m + 1;
+            while (l1>=l && a[l1][1] == a[x][1]) {
+                
+                dem++;
+                l1--;
+            }
+            while (r1 <= r && a[r1][1] == a[x][1]) {
+                
+                dem++;
+                r1++;
+            }
+            break;// khi da tim du, thoat vong lap ra ngoai 
+		}
+		else if(a[m][1]>a[x][1]){
+			r=m-1;
+		}
+		else {
+			l=m+1;
+		}
+	}
+	if(dem>1){
+		cout<<"	   +co  "<< dem <<" nam co cung so luong nguoi duoc sinh ra la " << a[x][1]<< endl;
+	}
+}
+int main(){
+	ll n;
+	cout<<"Nhap so nam ban muon quan ly: ";
+	cin>> n;
+	ll a[n][2];
+	ll b[n][2];
+	cout<<endl;
+	ll dem;
+	cout<<"nhap nam va so nguoi duoc sinh ra trong nam do :";
+	for(ll i=0;i<n;i++){
+		cout<< endl;
+		cout<< "nam: ";
+		cin>> a[i][0];
+		cout<<"          so nguoi: ";
+		cin>> a[i][1];
+	}
+	mergesort(a,0,n-1,b); // sap xep theo thu tu tang dan theo so nguoi duoc  sinh ra 
+	for(ll i=0;i<n;i++){
+		cout<< a[i][0]<<" "<< a[i][1]<< endl; // day la ham test de xem da sap xep theo thu tu tang dan so nguoi chua, khong lien quan den de bai, chi de test thoiiii
+	}
+	cout<< endl;
+	 cout<<"nam co so luong nguoi sinh ra be nhat la: "<<a[0][0] ;// da xong phan tim nam co nguoi sinh ra nho nhat
+	 ll minn=1;
+	 while(a[minn][1]== a[0][1]){
+	 	cout<<" , "<< a[minn][0];
+	 	minn++;
+	 }
+	 cout<<"   Voi so luong nguoi duoc sinh ra la : "<< a[0][1]<< endl;
+	 cout<< endl;
+	 cout<<"nam co so luong nguoi sinh ra lon nhat la: "<<a[n-1][0] ;// da xong phan tim nam co nguoi sinh ra lon nhat
+	 ll maxx=n-2;
+	 while(a[maxx][1]==a[n-1][1]){
+	 	cout<<" , "<< a[maxx][0];
+	 	maxx--;
+	 }
+	 cout<<"   Voi so luong nguoi duoc sinh ra la : "<< a[n-1][1]<< endl;
+	 cout<< endl;
+	 cout<<"thong ke cac nam co cung so luong nguoi sinh ra la: "<< endl;
+	 for(ll i=0;i<n-1;i++){
+	 	if(i==0 || a[i][1]!= a[i-1][1]){// tranh bi dem lap 
+	 		timkiem(a,i+1,n-1,i);
+		 }
+	 }
+	 
+	 
+	
+	
+}
