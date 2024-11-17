@@ -1,0 +1,161 @@
+#include<bits/stdc++.h>
+using ll=long long;
+using namespace std;
+struct node{
+    string data;
+    node *next;
+};
+node* makeNode(string x){      //Cấp phát động 1 node mới và trả về địa chỉ của node đó
+    node* newNode = new node;
+    newNode->data = x;
+    newNode->next = NULL;
+    return newNode;
+}
+//Tham số là 1 con trỏ kiểu node
+void duyet(node *head){
+    while(head != NULL){
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+int count(node *head){ // dem so tu co trong cau
+    int ans = 0;
+    while(head != NULL){
+        ++ans;
+        head = head->next;
+    }
+    return ans;
+}
+
+void themdau(node *&head, string x){
+    node* newNode = makeNode(x);
+    newNode->next = head;
+    head = newNode;
+}
+
+void themcuoi(node *&head, string x){
+    node *tmp = head;
+    node* newNode = makeNode(x);
+    if(head == NULL){
+        head = newNode; return;
+    }
+    while(tmp->next != NULL){
+        tmp = tmp->next;
+    }
+    tmp->next = newNode;
+}
+void themgiua(node *&head, string x, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *newNode = makeNode(x);
+    if(k == 1){
+        newNode->next = head; head = newNode;
+        return;
+    }
+    node *tmp = head;
+    for(int i = 1; i <= k - 2; i++){
+        tmp = tmp->next;
+    }
+    newNode->next = tmp->next; // tmp : k - 1, tmp->next : k
+    tmp->next = newNode;
+}
+
+void xoadau(node *&head){
+    if(head == NULL) return;
+    node *tmp = head; // xoa
+    head = head->next;
+    delete tmp;
+}
+
+void xoacuoi(node *&head){
+    if(head == NULL) return;
+    node *tmp = head;
+    if(tmp->next == NULL){
+        head = NULL; delete tmp; return;
+    }
+    while(tmp->next->next != NULL){
+        tmp = tmp->next;
+    }
+    node *cuoi = tmp->next;
+    tmp->next = NULL;
+    delete cuoi;
+}
+
+void xoagiua(node *&head, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *tmp = head;
+    if(k == 1){
+        head = head->next; delete tmp;
+        return;
+    }
+    for(int i = 1; i <= k - 2; i++){
+        tmp = tmp->next;
+    }
+    node *xoa = tmp->next;
+    // k - 1 -> k + 1
+    tmp->next = tmp->next->next; // xoa->next
+    delete xoa;
+}
+void CAU3 (node *&head  ){
+	ll k=1; // vi tri 1
+	string z="&&&&&&&&";
+	node *ass =head;
+	while(ass!=NULL){
+		if(ass -> data == z ){
+			xoagiua(head, k);
+			ass=head;
+			for(ll i=1;i<k;i++){
+				ass=ass ->next;
+			}
+		}
+		else{
+			z=ass->data;
+			
+			ass=ass->next;
+			k++;
+		}
+		
+	}
+	cout<<"sau khi xoa het tu lay, ta co cau moi la: ";
+	duyet(head);
+	
+}
+
+
+int main(){
+	map<string,int> mp ;// dem so luong moi tu trong cau
+	node *head = NULL;
+	string a;
+	
+	getline(cin, a);
+	stringstream ss(a); // Sử dụng stringstream để tách từ
+    string word;
+    while (ss >> word) { // Lặp qua từng từ trong chuỗi
+    	themcuoi(head,word);// them vao danh sach lien ket
+        mp[word]++; // Tăng số lần xuất hiện của từ đó
+    }
+	string maxxtu="a";
+	int maxxsotu=0;
+	for(auto it : mp){
+		cout<< it.first <<" "<< it.second<< endl;
+		if(maxxsotu < it.second){
+			maxxtu=it.first;
+			maxxsotu=it.second;
+		}
+	}
+	cout<<" ==> Vay tu xuat hien nhieu nhat trong cau la : "<< maxxtu <<" - "<< maxxsotu <<" lan" << endl;// da xong cau 2.
+	cout<< endl;
+	CAU3(head); // DA XONG CAU 3
+	cout<< endl;
+	cout<<"so tu vung xuat hien trong cau sau khi da thay doi la : ";
+	
+	ll j= count(head); cout<< j<< endl;  //DA XONG CAU 4
+	 
+	
+	 
+	 
+	 
+	 
+	
+}
