@@ -1,0 +1,43 @@
+#include<bits/stdc++.h>
+using ll=long long;
+using namespace std;
+struct node{
+	char tensp;
+	ll gia;
+};
+
+int main(){
+	map<char,int> mp;
+	ll tong=0;
+	node S;
+	queue<node> q;
+	ll n;
+	cout<<"nhap so luong hoa don trong sieu thi: ";
+	cin>> n;
+	for(ll i=0;i<n;i++){
+		cout<<"-nhap thong tin hoa don so "<< i+1 <<" : "<< endl;
+		cout<<"		+ten san pham : ";
+		cin>> S.tensp;
+		mp[S.tensp]++;
+		cout<<"		+gia tien :  ";
+		cin>> S.gia;
+		cout<< endl;
+		q.push(S);
+	}
+	while(!q.empty()){
+		
+		node I= q.front();
+		tong+= I.gia;
+		cout<<"tong so tien ma thu ngan thu duoc tai quay sau moi phien thanh toan la: "<< tong << endl;
+		q.pop();
+	}
+	char a;
+	cout<<" nhap ten san phan ban muon kiem tra so luong da duoc ban :";
+	cin>> a;
+	for(auto it = mp.begin();it!= mp.end(); it++){
+		if(it->first== a ){
+			cout<<"so luong san pham "<< (char)a <<" da duoc ban la: "<< it->second;
+			break;
+		}
+	}
+}
