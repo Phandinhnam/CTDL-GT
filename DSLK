@@ -1,0 +1,256 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+struct node{
+    int data;
+    node *next;
+};
+
+//Cấp phát động 1 node mới và trả về địa chỉ của node đó
+node* makeNode(int x){
+    node* newNode = new node;
+    newNode->data = x;
+    newNode->next = NULL;
+    return newNode;
+}
+//Tham số là 1 con trỏ kiểu node
+void duyet(node *head){
+    while(head != NULL){
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+int count(node *head){
+    int ans = 0;
+    while(head != NULL){
+        ++ans;
+        head = head->next;
+    }
+    return ans;
+}
+
+void themdau(node *&head, int x){
+    node* newNode = makeNode(x);
+    newNode->next = head;
+    head = newNode;
+}
+
+void themcuoi(node *&head, int x){
+    node *tmp = head;
+    node* newNode = makeNode(x);
+    if(head == NULL){
+        head = newNode; return;
+    }
+    while(tmp->next != NULL){
+        tmp = tmp->next;
+    }
+    tmp->next = newNode;
+}
+
+void themgiua(node *&head, int x, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *newNode = makeNode(x);
+    if(k == 1){
+        newNode->next = head; head = newNode;
+        return;
+    }
+    node *tmp = head;
+    for(int i = 1; i <= k - 2; i++){
+        tmp = tmp->next;
+    }
+    newNode->next = tmp->next; // tmp : k - 1, tmp->next : k
+    tmp->next = newNode;
+}
+
+void xoadau(node *&head){
+    if(head == NULL) return;
+    node *tmp = head; // xoa
+    head = head->next;
+    delete tmp;
+}
+
+void xoacuoi(node *&head){
+    if(head == NULL) return;
+    node *tmp = head;
+    if(tmp->next == NULL){
+        head = NULL; delete tmp; return;
+    }
+    while(tmp->next->next != NULL){
+        tmp = tmp->next;
+    }
+    node *cuoi = tmp->next;
+    tmp->next = NULL;
+    delete cuoi;
+}
+
+void xoagiua(node *&head, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *tmp = head;
+    if(k == 1){
+        head = head->next; delete tmp;
+        return;
+    }
+    for(int i = 1; i <= k - 2; i++){
+        tmp = tmp->next;
+    }
+    node *xoa = tmp->next;
+    // k - 1 -> k + 1
+    tmp->next = tmp->next->next; // xoa->next
+    delete xoa;
+}
+
+int main(){
+    #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    #endif
+    node *head = NULL;
+    for(int i = 1; i <= 10; i++){
+        themcuoi(head, i);
+    }
+    xoagiua(head, 5);
+    duyet(head);
+}
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+struct node{
+    int data;
+    node *next;
+    node *prev;
+};
+
+//Cấp phát động 1 node mới và trả về địa chỉ của node đó
+node* makeNode(int x){
+    node* newNode = new node;
+    newNode->data = x;
+    newNode->next = newNode->prev = NULL;
+    return newNode;
+}
+//Tham số là 1 con trỏ kiểu node
+void duyet(node *head){
+    while(head != NULL){
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+int count(node *head){
+    int ans = 0;
+    while(head != NULL){
+        ++ans;
+        head = head->next;
+    }
+    return ans;
+}
+
+void themdau(node *&head, int x){
+    node* newNode = makeNode(x);
+    newNode->next = head;
+    if(head != NULL)
+        head->prev = newNode;
+    head = newNode;
+}
+
+void themcuoi(node *&head, int x){
+    node *tmp = head;
+    node* newNode = makeNode(x);
+    if(head == NULL){
+        head = newNode; return;
+    }
+    while(tmp->next != NULL){
+        tmp = tmp->next;
+    }
+    tmp->next = newNode;
+    newNode->prev = tmp;   
+}
+
+void themgiua(node *&head, int x, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *newNode = makeNode(x);
+    if(k == 1){
+        newNode->next = head; 
+        if(head != NULL) head->prev = newNode;
+        head = newNode;
+        return;
+    }
+    node *tmp = head;
+    for(int i = 1; i <= k - 1; i++){
+        tmp = tmp->next;
+    }
+    //tmp : k
+    newNode->next = tmp;
+    tmp->prev->next = newNode;
+    newNode->prev = tmp->prev; 
+    tmp->prev = newNode;
+}
+
+void xoadau(node *&head){
+    if(head == NULL) return;
+    node *tmp = head; // xoa
+    head = head->next;
+    if(head != NULL)
+        head->prev = NULL;
+    delete tmp;
+}
+
+void xoacuoi(node *&head){
+    if(head == NULL) return;
+    node *tmp = head;
+    if(tmp->next == NULL){
+        head = NULL; delete tmp; return;
+    }
+    while(tmp->next->next != NULL){
+        tmp = tmp->next;
+    }
+    node *cuoi = tmp->next;
+    tmp->next = NULL;
+    delete cuoi;
+}
+
+void xoagiua(node *&head, int k){
+    if(k < 1 || k > count(head) + 1) return;
+    node *tmp = head;
+    if(k == 1){
+        head = head->next; 
+        if(head != NULL) head->prev = NULL;
+        delete tmp;
+        return;
+    }
+    for(int i = 1; i <= k - 1; i++){
+        tmp = tmp->next;
+    }
+    //tmp : k
+    tmp->prev->next = tmp->next;
+    tmp->next->prev = tmp->prev;
+    delete tmp;
+}
+
+int main(){
+    #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    #endif
+    node *head = NULL;
+    for(int i = 1; i <= 10; i++){
+        themcuoi(head, i);
+    }
+    xoagiua(head, 5);
+    duyet(head);
+}
+
+
+
+
