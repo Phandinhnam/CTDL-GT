@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using ll =long long;
+using namespace std;
+struct node{
+	string data;
+	node *left;
+	node *right;
+};
+
+node *makenode(string x){
+	node *newnode = new node;
+	newnode->data = x;
+	newnode->left=NULL;
+	newnode->right=NULL;
+	return newnode;
+}
+bool checktoanhang(string &s){
+	return !s.empty() && (isdigit(s[0]) || isalpha(s[0]));
+}
+bool checktoantu(string &s) {
+    return s == "+" || s == "-" || s == "*" || s == "/" || s == "^";
+}
+
+ll uutien(string &tt) {
+    if (tt == "+" || tt == "-") return 1;
+    if (tt == "*" || tt == "/") return 2;
+    if (tt == "^") return 3;  
+    return 0;
+}
+
+void taonode(stack<node*>&tt ,stack<node*> &th ){
+	node *newnode = tt.top();
+	tt.pop();
+	newnode->right =th.top();
+	th.pop();
+	newnode->left =th.top();
+	th.pop();
+	th.push(newnode);
+}
+node* taocay(string x){
+	stack <node*> th;
+	stack <node*> tt;
+	stringstream ss(x);
+	string word;
+	while( ss >> word){
+		if(checktoanhang(word)){
+			node*newnode =makenode(word);
+			th.push(newnode);
+		}
+		else if( word=="("){
+			node*newnode =makenode(word);
+			tt.push(newnode);
+		}
+		else if(word ==")"){
+			while(!tt.empty()&& tt.top()->data != "("){
+				taonode(tt,th);
+			}
+			tt.pop(); //bo dau "("
+		}
+		else if(checktoantu(word)){
+			while(!tt.empty() && uutien(tt.top()->data)>=uutien(word)&& !(word == "^" && tt.top()->data == "^")){// 	ĐOẠN NÀY EM CÓ DÙNG XÍU AI ĐỂ XỬ LÝ MŨ Ạ!!!!!
+				taonode(tt,th);
+			}
+			node*newnode =makenode(word);
+			tt.push(newnode);
+		}
+	}
+	while(!tt.empty()){
+		taonode(tt,th);
+	}
+	return th.top();
+}
+void hauto(node* root) {
+    if (root == NULL) return;
+    hauto(root->left);
+    hauto(root->right);
+    cout << root->data << " ";
+}
+void tiento(node*root){
+	if(root == NULL) return;
+	cout<<root->data <<" ";
+	tiento(root->left);
+	tiento(root->right);
+}
+int main(){
+	string x="A * 5 - B * C ^ 6 / D + ( H - F ) * E ^ ( 1 / 2 ) ";
+	node *root= taocay(x);
+	cout<<"hau to : ";
+	hauto(root);
+	cout<< endl;
+	cout<<"tien to: ";
+	tiento(root);
+}
