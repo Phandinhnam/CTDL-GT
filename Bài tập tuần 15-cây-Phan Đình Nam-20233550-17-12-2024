@@ -1,0 +1,102 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll=long long;
+
+struct node{
+	string ten;
+	ll sotrang;
+	vector<node*> muccon;
+};
+
+node *makenode(string ten, ll sotrang){
+	node *newnode= new node;
+	newnode->ten= ten;
+	newnode->sotrang= sotrang;
+	return newnode;
+}
+
+void themmuc(node* cha,string ten, ll sotrang){ // them muc ben  trong chuong cua cuon sach
+	node*newnode= makenode(ten,sotrang);
+	cha->muccon.push_back(newnode);
+}
+
+void sochuong(node*cha){ // xac dinh so chuong cua cuon sach
+	ll dem;
+	dem= cha->muccon.size();
+	cout<<"so chuong cua cuon sach la: ";
+	cout<< dem<< endl;
+	
+}
+void chuongdainhat( node*cha){
+	node *chuongdainhat =new node;
+	ll maxx=0;
+	for(auto it= cha->muccon.begin(); it!= cha->muccon.end();it++){
+		if(maxx < (*it)->sotrang){
+			maxx= (*it)->sotrang;
+			chuongdainhat=*it;
+		}
+	}
+	cout<<"chuong dai nhat la chuong : ";
+	cout<< chuongdainhat->ten<< endl;
+	cout<<"voi so trang la: ";
+	cout<<chuongdainhat->sotrang<< endl;
+	
+}
+void caysach(node* cha){
+	for(auto it=cha->muccon.begin();it!=cha->muccon.end();it++){
+		cout<<(*it)->ten<<" -  "<< (*it)->sotrang<< endl;
+		
+		if(!(*it)->muccon.empty()){
+			for(auto ut=(*it)->muccon.begin();ut!=(*it)->muccon.end();ut++){
+				cout<<" 	"<< (*ut)->ten<<" -  "<<(*ut)->sotrang<< endl;
+			}
+		}
+	}
+}
+void xoamuc(node*& cha ,string tenn){
+	bool check=false;
+	for(auto it=cha->muccon.begin();it!=cha->muccon.end();it++){
+		if(!(*it)->muccon.empty()){
+			ll dem=0;
+			for(auto ut=(*it)->muccon.begin();ut!=(*it)->muccon.end();ut++){
+				
+				if((*ut)->ten== tenn){
+					check=true;
+					(*it)->muccon.erase((*it)->muccon.begin()+dem);
+				}
+				dem++;
+			}
+		}
+		
+	}
+	if(check) cout<<"da hoan thanh thao tac xoa muc"<< endl;
+	else cout<<"muc can xoa khong ton tai"<< endl;
+		
+}
+int main(){
+	cout<<"nhap ten cuon sach: ";
+	string sach;
+	getline(cin,sach);
+	node *root =makenode(sach,0); // tao ten sach- tao goc
+	themmuc(root,"chuong1",50);
+	themmuc(root,"chuong2",60);
+	themmuc(root,"chuong3",70);
+	themmuc(root,"chuong4",30);
+	themmuc(root,"chuong5",40);
+	
+	themmuc(root->muccon[0],"muc1.1",20);
+	themmuc(root->muccon[0],"muc1.2",20);
+	themmuc(root->muccon[0],"muc1.3",10);
+	themmuc(root->muccon[1],"muc2.1",20);
+	
+	cout<<"cay sach hien tai: "<< endl;
+	caysach(root);
+	cout<< endl;
+	chuongdainhat(root);
+	cout<< endl;
+	cout<<"tien hanh xoa muc 1.1"<< endl;
+	xoamuc(root, "muc1.1");
+	cout<<"cay sach sau khi da xoa:"<< endl;
+	caysach(root);
+	
+}
