@@ -1,0 +1,134 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct node{
+    ll data;
+    node* left;
+    node* right;
+    ll h;  
+};
+
+
+node* makenode(ll x) {
+    node* newnode = new node;
+    newnode->data = x;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    newnode->h = 1; 
+    return newnode;
+}
+
+
+ll chieucao(node* node) {
+    if (node == NULL) return 0;
+    return node->h;
+}
+
+
+ll hesocb(node* node) {
+    if (node == NULL) return 0;
+    return chieucao(node->left) - chieucao(node->right);
+}
+
+
+node* quayphai(node* root) {
+    node* new_root = root->left;
+    root->left = new_root->right;
+    new_root->right = root;
+
+    
+    root->h = max(chieucao(root->left), chieucao(root->right)) + 1;
+    new_root->h = max(chieucao(new_root->left), chieucao(new_root->right)) + 1;
+
+    return new_root;
+}
+
+
+node* quaytrai(node* root) {
+    node* new_root = root->right;
+    root->right = new_root->left;
+    new_root->left = root;
+
+    
+    root->h = max(chieucao(root->left), chieucao(root->right)) + 1;
+    new_root->h = max(chieucao(new_root->left), chieucao(new_root->right)) + 1;
+
+    return new_root;
+}
+
+
+void duyet(node* root) {
+    if (root) {
+        duyet(root->left);
+        cout << root->data << " ";
+        duyet(root->right);
+    }
+}
+
+node* chen(node* node, ll data) {
+    
+    if (node == NULL) return makenode(data);
+
+    if (data < node->data) {
+        node->left = chen(node->left, data);
+    } else if (data > node->data) {
+        node->right = chen(node->right, data);
+    } else {
+        return node;  
+    }
+
+    
+    node->h = max(chieucao(node->left), chieucao(node->right)) + 1;
+
+    
+    ll hscb = hesocb(node);
+
+    
+    if (hscb > 1 && data < node->left->data) {
+        return quayphai(node);
+    }
+
+    
+    if (hscb < -1 && data > node->right->data) {
+        return quaytrai(node);
+    }
+
+    
+    if (hscb > 1 && data > node->left->data) {
+        node->left = quaytrai(node->left);
+        return quayphai(node);
+    }
+
+    
+    if (hscb < -1 && data < node->right->data) {
+        node->right = quayphai(node->right);
+        return quaytrai(node);
+    }
+
+    return node;  
+}
+
+int main() {
+    ll n;
+    cin >> n;
+    ll a[n];  
+
+    for (ll i = 0; i < n; i++) {
+        cin >> a[i];  
+    }
+
+    node* root = NULL;
+
+    
+    for (ll i = 0; i < n; i++) {
+        root = chen(root, a[i]);
+    }
+
+    
+    cout << "Cay AVL theo thu tu in-order: ";
+    duyet(root);
+    cout << endl;
+
+    return 0;
+}
